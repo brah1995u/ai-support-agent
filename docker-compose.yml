@@ -1,0 +1,20 @@
+# Optional: run against a real Postgres + pgvector instead of the embedded PGlite.
+#   docker compose up -d
+#   DATABASE_URL=postgres://nimbus:nimbus@localhost:5433/nimbus npm run dev
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: nimbus
+      POSTGRES_PASSWORD: nimbus
+      POSTGRES_DB: nimbus
+    ports:
+      - "5433:5432"
+    volumes:
+      - nimbus-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nimbus"]
+      interval: 3s
+      retries: 20
+volumes:
+  nimbus-pg:
